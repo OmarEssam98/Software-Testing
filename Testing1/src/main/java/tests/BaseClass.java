@@ -9,6 +9,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -18,7 +19,6 @@ import java.net.URL;
 public class BaseClass
 {
     static AppiumDriver<MobileElement> driver;
-    static AndroidDriver androidDriver = (AndroidDriver) driver;
     static WebDriverWait wait;
     public static void main(String[]args)
     {
@@ -33,8 +33,10 @@ public class BaseClass
             ViewMyAbout();   //Then view User's Own About Info from inside profile
             UploadPhoto();   //Then Upload Photo
             ViewSearch();   //Then Go to Search Tab
-            Search();   //Then Search for "Mazen Ayman"
+            //Search();   //Then Search for "Mazen Ayman"
             ViewPhotoStream();  //Then View Photo Stream
+            Follow();   //Then Follow Random User
+            Unfollow();   //Then Unfollow Same Random user and return to PhotoStream
         }
         catch(Exception Exp)
         {
@@ -59,7 +61,6 @@ public class BaseClass
         //caps.setCapability(CapabilityType.NEW_COMMAND_TIMEOUT, 60);
         URL url =new URL("http://127.0.0.1:4723/wd/hub");
         driver=new AppiumDriver<MobileElement>(url,caps);
-        androidDriver=new AndroidDriver(caps);
         System.out.println("Application Started Successfully!");
 
         //////////////////////    Login    //////////////////////
@@ -239,15 +240,46 @@ public class BaseClass
         People.click();
         System.out.println("Clicked on People tab Successfully!");
         MobileElement SearchBarClicked=driver.findElement(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.RelativeLayout/android.widget.EditText"));
-        SearchBarClicked.setValue("Mazen Ayman");
+        //SearchBarClicked.setValue("Mazen Ayman");
         System.out.println("Set Name to search for Successfully!");
         //androidDriver.pressKey(new KeyEvent(AndroidKey.ENTER));
-        //System.out.println("Pressed Enter Key");
-        //System.out.println("Searching...");
+        System.out.println("Pressed Enter Key");
+        System.out.println("Searching...");
     }
-
-
-
+    public static void Follow()
+    {
+        System.out.println("Testing Following User...");
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/androidx.viewpager.widget.ViewPager/android.widget.FrameLayout/androidx.recyclerview.widget.RecyclerView/android.widget.RelativeLayout[1]/android.widget.FrameLayout/android.view.View")));
+        MobileElement ViewComments=driver.findElement(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/androidx.viewpager.widget.ViewPager/android.widget.FrameLayout/androidx.recyclerview.widget.RecyclerView/android.widget.RelativeLayout[1]/android.widget.FrameLayout/android.view.View"));
+        ViewComments.click();
+        System.out.println("Comments Viewed Successfully!");
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/androidx.viewpager.widget.ViewPager/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.ListView/android.widget.RelativeLayout[2]/android.widget.TextView[1]")));
+        MobileElement User=driver.findElement(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/androidx.viewpager.widget.ViewPager/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.ListView/android.widget.RelativeLayout[2]/android.widget.TextView[1]"));
+        User.click();
+        System.out.println("Clicked On User Successfully!");
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.RelativeLayout/android.widget.LinearLayout")));
+        MobileElement Follow=driver.findElement(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.RelativeLayout/android.widget.LinearLayout"));
+        System.out.println("Clicking On Follow Button...");
+        Follow.click();
+        System.out.println("Followed User Successfully!");
+    }
+    public static void Unfollow()
+    {
+        System.out.println("Testing Unfollowing User...");
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.RelativeLayout/android.widget.LinearLayout")));
+        MobileElement Unfollow=driver.findElement(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.RelativeLayout/android.widget.LinearLayout"));
+        System.out.println("Clicking On unfollow Button...");
+        Unfollow.click();
+        System.out.println("Unfollowed User Successfully!");
+        System.out.println("Leaving User Profile...");
+        MobileElement LeaveUser=driver.findElement(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.view.ViewGroup/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.RelativeLayout/android.widget.RelativeLayout/android.widget.ImageButton"));
+        LeaveUser.click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.ImageButton")));
+        System.out.println("Leaving Post...");
+        MobileElement LeavePost=driver.findElement(By.xpath("/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.ImageButton"));
+        LeavePost.click();
+        System.out.println("Left Post and returned back to PhotoStream Successfully!");
+    }
 
 
 
